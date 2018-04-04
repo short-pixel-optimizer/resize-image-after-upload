@@ -610,7 +610,7 @@ function jr_error_log($message) {
 
 // Add Epsilon Smart Notification
 require_once 'class-epsilon-smart-notification.php';
-Epsilon_Smart_Notification::get_instance( array(
+new Epsilon_Smart_Notification( array(
   'id' => 'resize-image-after-upload',
   'plugins' => array(
     'shortpixel-image-optimiser' => array(
