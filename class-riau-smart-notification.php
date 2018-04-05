@@ -1,26 +1,21 @@
 <?php
 
-if ( class_exists( 'Epsilon_Smart_Notification' ) ) {
-	return;
-}
-
-class Epsilon_Smart_Notification {
+class RIAU_Smart_Notification {
 
 	private static $_instance = null;
 	private $plugins;
 	
 	function __construct( $args ) {
 		
-		$this->container_id = 'epsilon-smart-notification-' . $args['id'];
-		$this->id = $args['id'];
-		$this->options = get_option( 'esn-' . $args['id'], array() );
+		$this->container_id = 'riau-smart-notification';
+		$this->options = get_option( 'riau-recommended-plugin', array() );
 		$this->plugins = $this->parse_plugins( $args['plugins'] );
 
 		if ( is_admin() && $this->show_notice() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 			add_action( 'admin_notices', array( $this, 'notification' ) );
-			add_action( 'wp_ajax_epsilon_smart_notitification', array( $this, 'ajax' ) );
-			add_action('admin_footer', array( $this, 'esn_script' ) );
+			add_action( 'wp_ajax_riau_smart_notitification', array( $this, 'ajax' ) );
+			add_action('admin_footer', array( $this, 'riau_script' ) );
 		}
 
 	}
@@ -58,7 +53,7 @@ class Epsilon_Smart_Notification {
 
 	/**
 	 * @since 1.0.0
-	 * @return Epsilon_Smart_Notification
+	 * @return riau_Smart_Notification
 	 */
 	public static function get_instance( $args ) {
 		if ( is_null( self::$_instance ) ) {
@@ -71,33 +66,33 @@ class Epsilon_Smart_Notification {
 		$notice_html = '';
 
 		foreach ( $this->plugins as $slug => $plugin ) {
-			$notice_html .= '<div class="esn-plugin-card">';
+			$notice_html .= '<div class="riau-plugin-card">';
 			$url = $this->create_plugin_link( $plugin['needs'], $slug );
 			if ( '' != $plugin['image'] ) {
-				$notice_html .= '<div class="esn-plugin-image" style="padding-right: 10px;">';
+				$notice_html .= '<div style="padding-right: 10px;">';
 				$notice_html .= '<img src="' . esc_url( $plugin['image'] ) . '" width="75" height="75">';
 				$notice_html .= '</div>';
 			}
-			$notice_html .= '<div class="esn-plugin-content" style="align-self: center;flex-grow: 1;">';
+			$notice_html .= '<div style="align-self: center;flex-grow: 1;">';
 			$notice_html .= '<h3 style="margin:0;">' . $plugin['name'] . '</h3>';
 			$notice_html .= '<p>' . $plugin['description'] . '</p>';
 			$notice_html .= '</div>';
-			$notice_html .= '<div class="esn-plugin-link">';
+			$notice_html .= '<div>';
 			$notice_html .= '<button type="button" class="notice-dismiss" data-dismiss="' . esc_attr( $slug ) . '"><span class="screen-reader-text">Dismiss this notice.</span></button>';
 			$notice_html .= '<span class="plugin-card-' . esc_attr( $slug ) . ' action_button ' . $plugin['needs'] . '">';
-				$notice_html .= '<a data-slug="' . esc_attr( $slug ) . '" data-action="' . esc_attr( $plugin['needs'] ) . '" class="esn-plugin-button ' . esc_attr( $plugin['class'] ) . '" href="' . esc_url( $url ) . '">' . esc_attr( $plugin['label'] ) . '</a>';
+				$notice_html .= '<a data-slug="' . esc_attr( $slug ) . '" data-action="' . esc_attr( $plugin['needs'] ) . '" class="riau-plugin-button ' . esc_attr( $plugin['class'] ) . '" href="' . esc_url( $url ) . '">' . esc_attr( $plugin['label'] ) . '</a>';
 			$notice_html .= '</span>';
 			$notice_html .= '</div>';
 			$notice_html .= '</div>';
 		}
 
-		$class = "esn-one-column";
+		$class = "riau-one-column";
 		if ( count( $this->plugins ) > 1 ) {
-			$class = "esn-two-column";
+			$class = "riau-two-column";
 		}
-		echo '<div id="' . $this->container_id . '" class="esn-custom-notice notice ' . $class . '" style="background:transparent;border: 0 none;box-shadow: none;padding: 0;display: flex;">';
+		echo '<div id="' . $this->container_id . '" class="riau-custom-notice notice ' . $class . '" style="background:transparent;border: 0 none;box-shadow: none;padding: 0;display: flex;">';
 		echo $notice_html;
-		echo '<style>.esn-plugin-card {display: flex;background: #fff;border-left: 4px solid #46b450;padding: .5em 12px;box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);position:relative;align-items:center;}.esn-one-column .esn-plugin-card{ width:100%; }.esn-two-column .esn-plugin-card{width:49%;}.esn-two-column .esn-plugin-card:nth-child( 2n + 1 ){margin-right:2%;}</style>';
+		echo '<style>.riau-plugin-card {display: flex;background: #fff;border-left: 4px solid #46b450;padding: .5em 12px;box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);position:relative;align-items:center;}.riau-one-column .riau-plugin-card{ width:100%; }.riau-two-column .riau-plugin-card{width:49%;}.riau-two-column .riau-plugin-card:nth-child( 2n + 1 ){margin-right:2%;}</style>';
 		echo '</div>';
 		
 
@@ -105,11 +100,11 @@ class Epsilon_Smart_Notification {
 
 	public function ajax() {
 
-		check_ajax_referer( 'epsilon-smart-notitification', 'security' );
+		check_ajax_referer( 'riau-smart-notitification', 'security' );
 
 		if ( isset( $_POST['slug'] ) ) {
 			$this->options[] = sanitize_text_field( $_POST['slug'] );
-			update_option( 'esn-' . $this->id, $this->options );
+			update_option( 'riau-recommended-plugin', $this->options );
 		}
 
 		wp_die( 'ok' );
@@ -219,27 +214,27 @@ class Epsilon_Smart_Notification {
 			'active'    => $this->check_plugin_is_active( $slug ),
 			'needs'     => 'install',
 			'class'     => 'button button-primary',
-			'label'     => __( 'Install and Activate', 'resize-image-after-upload' ),
+			'label'     => __( 'Install and Activate', 'enable-media-replace' ),
 		);
 
 		if ( $arr['installed'] ) {
 			$arr['needs'] = 'activate';
 			$arr['class'] = 'button button-primary';
-			$arr['label'] = __( 'Activate now', 'resize-image-after-upload' );
+			$arr['label'] = __( 'Activate now', 'enable-media-replace' );
 		}
 
 		if ( $arr['active'] ) {
 			$arr['needs'] = 'deactivate';
 			$arr['class'] = 'deactivate-now button';
-			$arr['label'] = __( 'Deactivate now', 'resize-image-after-upload' );
+			$arr['label'] = __( 'Deactivate now', 'enable-media-replace' );
 		}
 
 		return $arr;
 	}
 
-	public function esn_script() {
+	public function riau_script() {
 
-		$ajax_nonce = wp_create_nonce( 'epsilon-smart-notitification' );
+		$ajax_nonce = wp_create_nonce( 'riau-smart-notitification' );
 
 		?>
 		<script type="text/javascript">
@@ -264,8 +259,8 @@ class Epsilon_Smart_Notification {
 			  }
 
 			  $( function() {
-			  	var esnContainer = $( '#<?php echo $this->container_id ?>' );
-			    esnContainer.on( 'click', '.esn-plugin-button', function( event ) {
+			  	var riauContainer = $( '#<?php echo $this->container_id ?>' );
+			    riauContainer.on( 'click', '.riau-plugin-button', function( event ) {
 			      var action = $( this ).data( 'action' ),
 			          url = $( this ).attr( 'href' ),
 			          slug = $( this ).data( 'slug' );
@@ -289,11 +284,11 @@ class Epsilon_Smart_Notification {
 
 			    } );
 
-			    esnContainer.on( 'click', '.notice-dismiss', function( event ) {
-			    	var container = $(this).parents( '.esn-plugin-card' ),
+			    riauContainer.on( 'click', '.notice-dismiss', function( event ) {
+			    	var container = $(this).parents( '.riau-plugin-card' ),
 			    		data = $(this).data(),
 			    		ajaxData = {
-							action: 'epsilon_smart_notitification',
+							action: 'riau_smart_notitification',
 							security: '<?php echo $ajax_nonce; ?>',
 						};
 
@@ -310,7 +305,7 @@ class Epsilon_Smart_Notification {
 			    });
 
 			    $( document ).on( 'wp-plugin-install-success', function( response, data ) {
-			      var el = esnContainer.find( '.esn-plugin-button[data-slug="' + data.slug + '"]' );
+			      var el = riauContainer.find( '.riau-plugin-button[data-slug="' + data.slug + '"]' );
 			      event.preventDefault();
 			      activatePlugin( data.activateUrl, el );
 			    } );
