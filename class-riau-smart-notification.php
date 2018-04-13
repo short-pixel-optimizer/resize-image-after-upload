@@ -4,8 +4,16 @@ class RIAU_Smart_Notification {
 
 	private static $_instance = null;
 	private $plugins;
+	private $options;
+	private $plugin_dir;
 	
 	function __construct( $args ) {
+
+		if ( defined( WP_PLUGIN_DIR ) ) {
+			$this->plugin_dir = WP_PLUGIN_DIR . '/';
+		}else{
+			$this->plugin_dir = WP_CONTENT_DIR . '/plugins/';
+		}
 		
 		$this->container_id = 'riau-smart-notification';
 		$this->options = get_option( 'riau-recommended-plugin', array() );
@@ -140,8 +148,10 @@ class RIAU_Smart_Notification {
 	 * @return bool
 	 */
 	private function check_plugin_is_installed( $slug ) {
+		
 		$plugin_path = $this->_get_plugin_basename_from_slug( $slug );
-		if ( file_exists( ABSPATH . 'wp-content/plugins/' . $plugin_path ) ) {
+
+		if ( file_exists( $this->plugin_dir . $plugin_path ) ) {
 			return true;
 		}
 
@@ -153,7 +163,7 @@ class RIAU_Smart_Notification {
 	 */
 	private function check_plugin_is_active( $slug ) {
 		$plugin_path = $this->_get_plugin_basename_from_slug( $slug );
-		if ( file_exists( ABSPATH . 'wp-content/plugins/' . $plugin_path ) ) {
+		if ( file_exists( $this->plugin_dir . $plugin_path ) ) {
 			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 			return is_plugin_active( $plugin_path );
