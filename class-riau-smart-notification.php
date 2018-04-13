@@ -16,7 +16,7 @@ class RIAU_Smart_Notification {
 		}
 		
 		$this->container_id = 'riau-smart-notification';
-		$this->options = get_option( 'riau-recommended-plugin', array() );
+		$this->options = get_option( 'sp-recommended-plugin', array() );
 		$this->plugins = $this->parse_plugins( $args['plugins'] );
 
 		if ( is_admin() && $this->show_notice() ) {
@@ -112,7 +112,7 @@ class RIAU_Smart_Notification {
 
 		if ( isset( $_POST['slug'] ) ) {
 			$this->options[] = sanitize_text_field( $_POST['slug'] );
-			update_option( 'riau-recommended-plugin', $this->options );
+			update_option( 'sp-recommended-plugin', $this->options );
 		}
 
 		wp_die( 'ok' );
