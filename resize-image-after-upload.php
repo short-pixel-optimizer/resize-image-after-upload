@@ -4,7 +4,7 @@ Plugin Name: Resize Image After Upload
 Plugin URI: https://wordpress.org/plugins/resize-image-after-upload/
 Description: Automatically resize uploaded images to within specified maximum width and height. Also has option to force recompression of JPEGs. Configuration options found under <a href="options-general.php?page=resize-after-upload">Settings > Resize Image Upload</a>
 Author: ShortPixel
-Version: 1.8.5
+Version: 1.8.6
 Author URI: https://shortpixel.com
 
 Copyright (C) 2017 ShortPixel
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-$PLUGIN_VERSION = '1.8.5';
+$PLUGIN_VERSION = '1.8.6';
 $DEBUG_LOGGER = false;
 
 
