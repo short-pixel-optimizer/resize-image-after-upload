@@ -4,7 +4,7 @@ Plugin Name: Resize Image After Upload
 Plugin URI: https://wordpress.org/plugins/resize-image-after-upload/
 Description: Automatically resize uploaded images to within specified maximum width and height. Also has option to force recompression of JPEGs. Configuration options found under <a href="options-general.php?page=resize-after-upload">Settings > Resize Image Upload</a>
 Author: ShortPixel
-Version: 1.8.6
+Version: 1.8.7-beta1
 Author URI: https://shortpixel.com
 
 Copyright (C) 2017 ShortPixel
@@ -24,14 +24,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-$PLUGIN_VERSION = '1.8.6';
+$RIAU_PLUGIN_VERSION = '1.8.7-beta1';
 $DEBUG_LOGGER = false;
 
 
 // Default plugin values
-if(get_option('jr_resizeupload_version') != $PLUGIN_VERSION) {
+if(get_option('jr_resizeupload_version') != $RIAU_PLUGIN_VERSION) {
 
-  add_option('jr_resizeupload_version', 			$PLUGIN_VERSION, '','yes');
+  add_option('jr_resizeupload_version', 			$RIAU_PLUGIN_VERSION, '','yes');
   add_option('jr_resizeupload_width', 				'1200', '', 'yes');
   add_option('jr_resizeupload_height',				'1200', '', 'yes');
   add_option('jr_resizeupload_quality',				'90', '', 'yes');
@@ -405,9 +405,12 @@ function jr_uploadresize_options(){
 */
 function jr_uploadresize_resize($image_data){
 
-
   jr_error_log("**-start--resize-image-upload");
 
+  if(strpos($image_data['type'], 'image/') === false) {
+      //not an image, other download
+      return $image_data;
+  }
 
   $resizing_enabled = get_option('jr_resizeupload_resize_yesno');
   $resizing_enabled = ($resizing_enabled=='yes') ? true : false;
